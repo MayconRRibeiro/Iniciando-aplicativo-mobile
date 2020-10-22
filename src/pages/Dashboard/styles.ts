@@ -9,7 +9,7 @@ export const Container = styled.View`
 `
 export const Header = styled.View`
   padding: 24px;
-  ${Platform.select({ ios: css`padding-top: ${ getStatusBarHeight() + 24 }px`})}
+  padding-top: ${getStatusBarHeight() + 24 }px;
 
   background: #28262e;
 
