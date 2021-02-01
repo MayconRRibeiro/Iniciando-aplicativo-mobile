@@ -30,7 +30,7 @@ import {
   ForgotPassword,
   ForgotPasswordText,
   CreateAccountButton,
-  CreateAccountButtonText
+  CreateAccountButtonText,
 } from './styles';
 
 interface SignInFormData {
@@ -46,40 +46,43 @@ const SignIn: React.FC = () => {
 
   const { signIn } = useAuth();
 
-  const handleSignIn = useCallback(async (data: SignInFormData) => {
-    try {
-      formRef.current?.setErrors({});
+  const handleSignIn = useCallback(
+    async (data: SignInFormData) => {
+      try {
+        formRef.current?.setErrors({});
 
-      const schema = Yup.object().shape({
-        email: Yup.string()
-          .required('E-mail obrigatório')
-          .email('Digite um e-mail válido'),
-        password: Yup.string().required('Senha obrigatória'),
-      });
+        const schema = Yup.object().shape({
+          email: Yup.string()
+            .required('E-mail obrigatório')
+            .email('Digite um e-mail válido'),
+          password: Yup.string().required('Senha obrigatória'),
+        });
 
-      await schema.validate(data, {
-        abortEarly: false,
-      });
+        await schema.validate(data, {
+          abortEarly: false,
+        });
 
-      await signIn({
-        email: data.email,
-        password: data.password,
-      });
-    } catch (err) {
-      if (err instanceof Yup.ValidationError) {
-        const errors = getValidationErrors(err);
+        await signIn({
+          email: data.email,
+          password: data.password,
+        });
+      } catch (err) {
+        if (err instanceof Yup.ValidationError) {
+          const errors = getValidationErrors(err);
 
-        formRef.current?.setErrors(errors);
+          formRef.current?.setErrors(errors);
 
-        return;
+          return;
+        }
+
+        Alert.alert(
+          'Erro na autenticação',
+          'Ocorreu um erro ao fazer login, cheque as credenciais.',
+        );
       }
-
-      Alert.alert(
-        'Erro na autenticação',
-        'Ocorreu um erro ao fazer login, cheque as credenciais.',
-      );
-    }
-  }, [signIn]);
+    },
+    [signIn],
+  );
 
   return (
     <>
@@ -99,7 +102,11 @@ const SignIn: React.FC = () => {
               <Title>Faça seu logon</Title>
             </View>
 
-            <Form style={{ width: "100%" }} ref={formRef} onSubmit={handleSignIn}>
+            <Form
+              style={{ width: '100%' }}
+              ref={formRef}
+              onSubmit={handleSignIn}
+            >
               <Input
                 autoCorrect={false}
                 autoCapitalize="none"
@@ -125,12 +132,16 @@ const SignIn: React.FC = () => {
                 }}
               />
 
-              <Button onPress={() => {
-                formRef.current?.submitForm();
-              }}>Entrar</Button>
+              <Button
+                onPress={() => {
+                  formRef.current?.submitForm();
+                }}
+              >
+                Entrar
+              </Button>
             </Form>
 
-            <ForgotPassword onPress={() => { }}>
+            <ForgotPassword onPress={() => {}}>
               <ForgotPasswordText>Esqueci minha senha</ForgotPasswordText>
             </ForgotPassword>
           </Container>
